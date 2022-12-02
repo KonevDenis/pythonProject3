@@ -1,21 +1,4 @@
 ##1)Считать названия объектов, даты и звездные величины из файла.
-def jdn(result): #функция считающая григорианскую дату (формула из википедии)
-    c = (result + 32082)//1
-    d = (4*c+3)//1461
-    e = c - (1461*d)//4
-    m = (5*e+2)//153
-#
-    day = e - ((153 * m + 2) // 5) + 1
-    month = m + 3 - 12*(m//10)
-    year = d - 4800 + (m//10)
-    hour0 = jdn%1*60
-    hour = hour0-hour0%1 + 12
-    minute0 = hour0%1*60
-    minute = minute0 - minute0%1
-    second0 = minute0%1*60
-    second = second0 - second0%1
-    return f'{int(day)}.{int(month)}.{int(year)} {int(hour)}.{int(minute)}.{int(second)}'
-
 f = open('task2_data.dat', 'r')  # открываем файл
 file = f.read().split('\n')  # считываем весь файл, разделяя по переходам строк (используем именно read, потому что readline и readlines создают списки)
 # first = item
@@ -33,7 +16,7 @@ item = []  # обнуляем временный массив
 obj_1 = []
 fil_1 = []
 zvzdn = []
-lume = []
+svet = []
 #file = file[1:167] + file[168:172] + file[177:255] + file[257:267]
 print(file)
 for i in range(len(file)):
@@ -48,7 +31,7 @@ for i in range(len(file)):
 # print(set(obj_1))
 # print(set(fil_1))
 for i in range(len(file)):
-    lume.append(file[i][3])
+    svet.append(file[i][3])
 
     #print(i)
 #[i.split('\t', 1)[0] for i in pip]
@@ -79,17 +62,18 @@ for i in file:
 print(rz_lyr_fil)
 print(fil_1)
 
-i_obj = input("Введите название объекта:" )
-i_filt = input("Введите названия фильтров через запятую:" )
+i_obj = input("Введите название объекта SU_Hor or RZ_Lyr:" )
+i_filt = input("Введите названия фильтров через запятую V B Ic:" )
 i_f = i_filt.split(",")
 
 
 date_g = []
 for i in range (0, len(date)):
+    print(i)
     hjd = float(date[i]) + 0.5
     jd = int(hjd)
     dt = hjd - jd
-    a = jd + 32044           #религиозная википедия говорит использовать такие букавки,чиселки и формулы
+    a = jd + 32044           #формула ии вики, чтобы переводить из юлианской в григорианскую
     b = (4*a + 3) // 146097
     c = a - (146097*b // 4)
     d = (4*c + 3)//1461
@@ -118,34 +102,34 @@ elif len(inpfilt) == 3:
     f0, f1, f2 = inpfilt[0], inpfilt[1], inpfilt[2]
     new_file.write(f"Date\t\t\t\t HJD\t\t\t Magn in {f0}\t Magn in {f1}\t Magn in {f2}\n")
 
-lume0, lume1, lume2, Hjd, data = [], [], [], [], []
+svet0, svet1, svet2, Hjd, data = [], [], [], [], []
 for i in range(0, len(file)):
-    for j in range(0, len(obj_1)):
+    # for j in range(0, len(obj_1)):
         if obj_1[i] == str(i_obj):
             if fil_1[i] == f0:
                 Hjd.append(date[i])
-                lume0.append(lume[i])
+                svet0.append(svet[i])
                 data.append(date_g[i])
-                lume1.append(f'\t\t')
-                lume2.append(f'\t\t')
+                svet1.append(f'\t\t')
+                svet2.append(f'\t\t')
             elif fil_1[i] == f1:
                 Hjd.append(date[i])
-                lume0.append(f'\t\t')
+                svet0.append(f'\t\t')
                 data.append(date_g[i])
-                lume1.append(lume[i])
-                lume2.append(f'\t\t')
+                svet1.append(svet[i])
+                svet2.append(f'\t\t')
             elif fil_1[i] == f2:
                 Hjd.append(date[i])
-                lume0.append(f'\t\t')
+                svet0.append(f'\t\t')
                 data.append(date_g[i])
-                lume1.append(f'\t\t')
-                lume2.append(lume[i])
+                svet1.append(f'\t\t')
+                svet2.append(svet[i])
 
 for k in range(0, len(Hjd)):
     min_Hjd = min(Hjd)
     ind = Hjd.index(min_Hjd)
-    new_file.write(f"{data[ind]}\t {min_Hjd}\t {lume0[ind]}\t {lume1[ind]}\t {lume2[ind]}\n")
-    del Hjd[ind], data[ind], lume0[ind], lume1[ind], lume2[ind]
+    new_file.write(f"{data[ind]}\t {min_Hjd}\t {svet0[ind]}\t {svet1[ind]}\t {svet2[ind]}\n")
+    del Hjd[ind], data[ind], svet0[ind], svet1[ind], svet2[ind]
 
 new_file.close()
 
@@ -161,56 +145,3 @@ new_file.close()
 # # print(fil_2_suhor)
 # for i in file:
 #     if i[0][0] =
-
-
-# 3 пункт Попросить пользователя ввести имя объекта, данные для которого он хочет получить и названия
-# фильтров, данные в которых нужны (возможно введение нескольких фильтров).
-#
-#object_name = input('Введите имя объекта: ')  # просим пользователя ввести имя объекта
-# #
-# filters_names = set()
-# while len(fil_2.intersection(
-#          filters_names)) == 0:  # пересечение введенных фильтров и filters_names - корректные фильтры #
-#      inp = input('Введите фильтры, разделенные запятой: ')  # то же самое, но с фильтрами
-#      filters_names = set(inp.split(',')) #разделение запятой
-# #
-# filters_names = fil_2.intersection(filters_names) #находит одинаковые элементы в двух списках
-# processed = {}  # словарь с обработанной информацией из stars
-# for entry in file:
-#     if len(entry) == 0: # список пуст - пропускаем
-#         continue
-#     if entry[0] != object_name: # объект не введенный пользователем - пропускаем
-#         continue
-#     if entry[2] not in filters_names:  # фильтр не введенный пользователем - пропускаем
-#         continue
-#     if entry[1] not in processed:
-#         processed[entry[1]] = {'date': jdn(entry[1])} #с помощью функции считаем григорианскую дату
-#         for filter_name in filters_names:
-#             processed[entry[1]][filter_name] = '-'  # назначаем всем столбцам-фильтрам значение '-'
-#         processed[entry[1]][entry[2]] = entry[3]
-#
-# flo = open(f'{object_name}.dat', 'w')  # создаем файл с нужным именем
-# headers = 'Date\tHJD\t\t'  # создаем ряд-заголовок
-# for fil_2 in filters_names:
-#     headers += fil_2 + '\t'  # добавляем столбцы-фильтры
-#     print(headers)
-#     print(fil_2)
-# headers = headers[:-1] + '\n'  # удаляем лишнюю табуляцию и добавляем переход строки
-# flo.write(headers)  # записываем
-#
-# #dates = list(processed.keys())  # переводим ключи в словаре processed в список, чтобы можно было его отсортировать
-# dates.sort()  # сортировка
-#
-# for result in dates:  # проходимся по списку dates в порядке возрастания
-#     if result not in processed: # дата относится к другому объекту или фильтру - пропускаем
-#         continue
-#     value = processed[result]  # получаем соответствующую информацию из словаря processed
-#     s = value['date'] + '\t' + str(result) + '\t'  # первый столбец - григорианская дата, второй - JD
-#     for filter in filters_names:
-#         s += str(value[filter]) + '\t'  # добавляем столбцы-фильтры в порядке, в котором они были в сете filters_names
-#     s = s[:-1] + '\n'  # удаляем лишнюю табуляцию, переход строки
-#     flo.write(s)  # запись
-#
-# flo.close()  # закрытие файла
-#
-#
